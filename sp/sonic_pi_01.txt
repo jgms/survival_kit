@@ -1,0 +1,92 @@
+use_bpm 50
+
+load_samples :drum_bass_hard, :elec_wood, :drum_cymbal_closed, :drum_cymbal_open, :drum_snare_hard
+
+use_synth :prophet
+use_synth_defaults release: 0.5, cutoff_slide: 0.25
+
+base = 52
+jump = 3
+intervals = [12,9,6,3,6,9,12]
+
+7.times do
+  with_fx :reverb, mix: 0.2 do
+    interval = intervals[tick(:one)]
+    5.times do
+      with_fx :echo, mix: 0.8, decay: 4, phase: 0.75 do
+        nota = play (ring base, base + interval, base + interval * 2, base + interval * 3, base + interval * 4).tick(:two), amp: (ring 1, 0.3, 0.5, 1, 0.4).look(:two),cutoff: 110
+        control nota, cutoff: base
+      end
+      sleep 0.5
+    end
+    tick_reset :two
+    base+= jump
+  end
+end
+
+tick_reset :one
+base = 28
+
+
+in_thread do
+  7.times do
+    with_fx :reverb, mix: 0.2 do
+      interval = intervals[tick(:one)]
+      5.times do
+        with_fx :echo, mix: 0.8, decay: 4, phase: 0.75 do
+          nota = play (ring base, base + interval, base + interval * 2, base + interval * 3, base + interval * 4).tick(:two), amp: (ring 1, 0.3, 0.5, 1, 0.4).look(:two),cutoff: 110
+          control nota, cutoff: base
+        end
+        sleep 0.5
+      end
+      tick_reset :two
+      base+= jump
+    end
+  end
+end
+
+7.times do
+  with_fx :reverb, mix: 0.2 do
+    5.times do
+      tick(:two)
+      case
+      when look(:two) == 0
+        with_fx :echo, mix: 0.4, phase: 1 do
+          sample :drum_bass_hard
+        end
+        sleep 0.5
+      when look(:two) == 1 || look(:two) == 3
+        if look(:two) == 1
+          with_fx :echo, mix: 0.2, phase: 0.25 do
+            sample :elec_wood, rate: 4, amp: 2
+            sleep 0.0625
+            sample :elec_wood, amp: 4
+          end
+          sleep 0.0625
+          6.times do
+            sample :drum_cymbal_closed, sustain: 0, release: 0.25, amp: (ring 0.1,0.8,1.6,2.4,3.2,4).tick(:three)
+            sleep 0.0625
+          end
+          tick_reset :three
+        else
+          sample :drum_cymbal_closed
+          sleep 0.125
+          sample :drum_cymbal_closed, amp: 0.3
+          sleep 0.125
+          with_fx :echo, phase: 0.0625 do
+            sample :drum_cymbal_open, amp: 1.5
+          end
+          sleep 0.25
+        end
+      when look(:two) == 4
+        with_fx :echo, mix: 0.6, decay: 4, phase: 0.75 do
+          sample :drum_snare_hard, amp: 2
+        end
+        sleep 0.5
+      else
+        sleep 0.5
+      end
+    end
+    tick_reset :two
+  end
+end

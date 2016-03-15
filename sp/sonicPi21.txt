@@ -1,0 +1,53 @@
+$escala21 = []
+multiplicador = 1
+
+6.times do
+  $escala21[tick(:octava)] = []
+  21.times do
+    nota = 70*((2**(1 / 21.0))**tick(:notas))
+    $escala21[look(:octava)][look(:notas)] = hz_to_midi(nota*multiplicador)
+  end
+  tick_reset :notas
+  multiplicador*= 2
+end
+
+def modular(base,intervalo)
+  numero = base + intervalo > 20 ? (base + intervalo) - 21 : base + intervalo
+  return numero
+end
+
+def chord_color(raiz,octava,color)
+  raiz-=1
+  octava-=1
+  case color
+  when "a"
+    return [$escala21[octava][raiz],$escala21[raiz + 8 < 21 ? octava : octava + 1][modular(raiz,8)],$escala21[raiz + 14 < 21 ? octava : octava + 1][modular(raiz,14)]]
+  when "b"
+    return [$escala21[octava][raiz],$escala21[raiz + 6 < 21 ? octava : octava + 1][modular(raiz,6)],$escala21[raiz + 12 < 21 ? octava : octava + 1][modular(raiz,12)]]
+  when "c"
+    return [$escala21[octava][raiz],$escala21[raiz + 6 < 21 ? octava : octava + 1][modular(raiz,6)],$escala21[raiz + 11 < 21 ? octava : octava + 1][modular(raiz,11)]]
+  when "d"
+    return [$escala21[octava][raiz],$escala21[raiz + 5 < 21 ? octava : octava + 1][modular(raiz,5)],$escala21[raiz + 13 < 21 ? octava : octava + 1][modular(raiz,13)]]
+  when "e"
+    return [$escala21[octava][raiz],$escala21[raiz + 5 < 21 ? octava : octava + 1][modular(raiz,5)],$escala21[raiz + 11 < 21 ? octava : octava + 1][modular(raiz,11)]]
+  end
+end
+
+use_bpm 80
+
+use_synth :fm
+use_synth_defaults attack: 1.5, release: 0.25, cutoff: 130, cutoff_slide: 1.5
+
+with_fx :echo, phase: 0.75, decay: 8, mix: 0.6 do
+  20.times do
+    tick(:externo)
+    4.times do
+      tick(:interno)
+      a = play chord_color(look(:externo) + 1,(ring 1,3,1,2,4).look(:externo),(ring "a","b","c","d","e").look(:externo)).ring.look(:interno)
+      control a, cutoff: 10
+      sleep 1
+    end
+    tick_reset :interno
+  end
+  play chord_color_a(21,1),attack: 3, release: 2
+end
