@@ -1,0 +1,44 @@
+Escala
+
+1  |  5  |  9  |  11  |  15  |  17  |  21 | (1)
+  (4)   (4)   (2)    (4)    (2)    (4)   (1)
+A     B     C     D      E      F      G
+
+Acordes
+
+1 | 9 | 15 (8-6) tipo A
+
+5 | 11 | 17 (6-6) tipo B
+
+9 | 15 | 21 (6-6)
+
+11 | 17 | 1 (6-5) tipo C
+
+15 | 21 | 5 (6-5)
+
+17 | 1 | 9 (5-8) tipo D
+
+21 | 5 | 11 (5-6) tipo E
+
+Inversiones
+
+tipo A
+1ra inversión 9 | 15 | 1 (6-7)
+2da inversión 15 | 1 | 9 (7-8)
+
+tipo B
+1ra inversión 11 | 17 | 5 (6-9)
+2da inversión 17 | 5 | 11 (9-6)
+
+tipo C
+1ra inversión 17 | 1 | 11 (5-10)
+2da inversión 1 | 11 | 17 (10-6)
+
+tipo D
+1ra inversión 1 | 9 | 17 (8-8)
+2da inversión 9 | 17 | 1 (8-5)
+
+tipo E
+1ra inversión 5 | 11 | 21 (6-10)
+2da inversión 11 | 21 | 5 (10-5)
+

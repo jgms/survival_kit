@@ -1,0 +1,209 @@
+# Sonic Pi Etude II
+# Joaquin Mendoza Sebastian
+# www.joaquinmendoza.net
+# joaquinmendozasebastian@gmail.com
+
+def cluster(num_freq,base,factor,att,rel,del)# number of frequencies, base freq, interval, attack, release, delay times
+  use_synth :sine 
+  use_synth_defaults attack: att, release: rel, amp: 1.0 / num_freq # synth defaults, amplitude according to number of frequencies
+  with_fx :echo, phase: del, mix: 0.3 do 
+    num_freq.times do 
+      play hz_to_midi(base)
+      base+= factor
+    end
+  end
+end
+
+
+def elastic(freq,rel,del) # frequency, release time, delay time
+  use_synth :mod_sine
+  use_synth_defaults amp: 0.3, release: rel, note_slide: rel, mod_wave: 3, mod_range: 1, mod_phase: 0.25, mod_range_slide: rel, mod_phase_slide: rel
+  with_fx :echo, phase: del, mix: 0.3 do
+    n1 = play hz_to_midi(freq)
+    control n1, mod_range: 12, mod_phase: 0.0625
+    n2 = play hz_to_midi(freq)
+    control n2, note: hz_to_midi(freq * 3), mod_range: 12, mod_phase: 0.0625
+    n3 = play hz_to_midi(freq)
+    control n3, note: hz_to_midi(freq  / 2), mod_range: 12, mod_phase: 0.0625
+  end
+end
+
+
+use_bpm 40
+with_fx :reverb, room: 0.4, mix: 0.3 do
+  with_fx :echo, phase: 0.5, mix: 0.2 do
+
+    # intro
+    cluster(10,25,70,10,5,2)
+    sleep 5
+
+    # 3 notes theme A1
+    cluster(7,255,70,0,1,0.75)
+    sleep 0.25
+    cluster(7,155,170,0,1,0.75)
+    cluster(20,77.5,40,5,5,2)
+    sleep 0.25
+    cluster(7,455,270,0,1,0.25)
+    sleep 0.5
+
+    # elastic bit 1
+    elastic(255,2,0.75)
+    sleep 2
+
+    # quarters theme
+    5.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+
+    # 3 notes theme A2
+    elastic(510,0.5,0.5)
+    sleep 0.25
+    elastic(310,0.5,0.5)
+    sleep 0.25
+    elastic(910,4,0.5)
+    sleep 0.5
+
+    # quarters theme
+    5.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+
+    # 6 notes desc run
+    freq = 3400
+    6.times do
+      cluster(5,freq,270,0,3,0.75)
+      sleep 0.25
+      freq-= 400
+    end
+
+    # 3 notes theme A1
+    cluster(7,255,70,0,1,0.75)
+    sleep 0.25
+    cluster(7,155,170,0,1,0.75)
+    cluster(20,77.5,40,5,5,2)
+    sleep 0.25
+    cluster(7,455,270,0,1,0.25)
+    sleep 0.5
+
+    # quarters theme
+    5.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+
+    # 3 notes theme B
+    cluster(9,455,170,0,1,0.75)
+    sleep 0.75
+    cluster(7,355,270,0,1,0.75)
+    sleep 1
+    cluster(5,655,370,0,1,0.25)
+    sleep 0.75
+
+    # 4 notes desc run
+    freq = 1000
+    4.times do
+      cluster(5,freq,270,0,1,2)
+      sleep 0.25
+      freq-= 200
+    end
+
+    # quarters theme
+    5.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+    #short pause a
+    sleep 2
+
+    # elastic bit 3
+    elastic(1020,10,2)
+    sleep 3
+
+    # 3 notes theme B
+    cluster(9,455,170,0,1,0.75)
+    sleep 0.75
+    cluster(7,355,270,0,1,0.75)
+    sleep 1
+    cluster(5,655,370,0,1,0.25)
+    sleep 0.75
+
+    # 8 notes desc run
+    freq = 3000
+    8.times do
+      cluster(5,freq,270,0,1,1.25)
+      sleep 0.125
+      freq-= 300
+    end
+
+    # 3 notes theme A1
+    cluster(7,255,70,0,1,0.75)
+    sleep 0.25
+    cluster(7,155,170,0,1,0.75)
+    cluster(20,77.5,40,5,5,2)
+    sleep 0.25
+    cluster(7,455,270,0,1,0.25)
+    sleep 0.5
+
+    # 3 notes theme A2
+    elastic(510,0.5,0.5)
+    sleep 0.25
+    elastic(310,0.5,0.5)
+    sleep 0.25
+    elastic(910,4,0.5)
+    sleep 0.5
+
+    # 4 notes desc run
+    freq = 1000
+    4.times do
+      cluster(5,freq,270,0,1,2)
+      sleep 0.25
+      freq-= 200
+    end
+
+    # quarters theme x2
+    10.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+
+    # 6 notes desc run
+    freq = 3400
+    6.times do
+      cluster(5,freq,270,0,3,0.75)
+      sleep 0.25
+      freq-= 400
+    end
+
+    # quarters theme
+    5.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+
+    # 3 notes theme A1
+    cluster(7,255,70,0,1,0.75)
+    sleep 0.25
+    cluster(7,155,170,0,1,0.75)
+    cluster(20,77.5,40,5,5,2)
+    sleep 0.25
+    cluster(7,455,270,0,1,0.25)
+    sleep 0.5
+
+    # 6 notes desc run half speed
+    freq = 3400
+    6.times do
+      cluster(5,freq,270,0,3,0.75)
+      sleep 0.5
+      freq-= 400
+    end
+
+    # quarters theme x3
+    15.times do
+      cluster(15,50,40,0,0.25,0.75)
+      sleep 1
+    end
+
+  end
+end

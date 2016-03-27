@@ -1,0 +1,98 @@
+$escala21 = []
+multiplicador = 1
+
+6.times do #base 0
+  $escala21[tick(:octava)] = []
+  21.times do
+    nota = 70*((2**(1 / 21.0))**tick(:notas))
+    $escala21[look(:octava)][look(:notas)] = hz_to_midi(nota*multiplicador)
+  end
+  tick_reset :notas
+  multiplicador*= 2
+end
+
+use_bpm 35
+use_synth :fm
+use_synth_defaults release: 0.5, cutoff: 130, cutoff_slide: 0.4, divisor: 4, divisor_slide: 0.05
+
+
+notas_base = [[3,8],[3,0],[3,8],[3,14],[4,0],[3,16],[3,10]]
+resta = 1
+a_restar = 0
+
+
+2.times do
+  with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.2, decay: 4 do
+    n = play $escala21[3][8]
+    control n, cutoff: 50, divisor: 16
+    sleep 0.5
+    n = play $escala21[3][0]
+    control n, cutoff: 10, divisor: 8
+  end
+  sleep 0.5
+  with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.2, decay: 4 do
+    n = play $escala21[3][8]
+    control n, cutoff: 10, divisor: 8
+    sleep 0.5
+    n = play $escala21[3][14]
+    control n, cutoff: 30, divisor: 8
+  end
+  sleep 0.5
+  with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.2, decay: 4 do
+    n = play $escala21[4][0], release: 1,cutoff_slide: 1
+    control n, cutoff: 5, divisor: 16
+    sleep 0.5
+    n = play $escala21[3][16]
+    control n, cutoff: 70, divisor: 16
+    sleep 0.5
+    n = play $escala21[3][10]
+    control n, cutoff: 40, divisor: 8
+    sleep 0.5
+  end
+end
+3.times do
+  a_restar = 0
+  7.times do
+    notas_base[a_restar][1] -= 1
+    if(notas_base[a_restar][1] == -1)
+      notas_base[a_restar][0] -= 1
+      notas_base[a_restar][1] = 20
+    end
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.4, decay: 4 do
+      n = play $escala21[notas_base[0][0]][notas_base[0][1]]
+      control n, cutoff: 50, divisor: 16
+    end
+    sleep 0.5
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.3, decay: 4 do
+      n = play $escala21[notas_base[1][0]][notas_base[1][1]]
+      control n, cutoff: 10, divisor: 8
+    end
+    sleep 0.5
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.2, decay: 4 do
+      n = play $escala21[notas_base[2][0]][notas_base[2][1]]
+      control n, cutoff: 10, divisor: 8
+    end
+    sleep 0.5
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.4, decay: 4 do
+      n = play $escala21[notas_base[3][0]][notas_base[3][1]]
+      control n, cutoff: 30, divisor: 8
+    end
+    sleep 0.5
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.2, decay: 4 do
+      n = play $escala21[notas_base[4][0]][notas_base[4][1]], release: 1,cutoff_slide: 1
+      control n, cutoff: 5, divisor: 16
+    end
+    sleep 0.5
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.3, decay: 4 do
+      n = play $escala21[notas_base[5][0]][notas_base[5][1]]
+      control n, cutoff: 70, divisor: 16
+    end
+    sleep 0.5
+    with_fx :echo, phase: (ring 0.75,1.75,2.75,1.25,0.25).tick, mix: 0.4, decay: 4 do
+      n = play $escala21[notas_base[6][0]][notas_base[6][1]]
+      control n, cutoff: 40, divisor: 8
+    end
+    sleep 0.5
+    a_restar += 1
+  end
+end
